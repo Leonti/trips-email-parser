@@ -18,6 +18,9 @@ lexeme = L.lexeme sc
 symbol :: String -> Parser String
 symbol = L.symbol sc
 
+location :: Parser String
+location = string "Moscow"
+
 test :: IO ()
 test = parseTest (satisfy (== 'a') :: Parser Char) ""
 
