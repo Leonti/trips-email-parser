@@ -115,5 +115,9 @@ pAbsDateTime year = do
   case s of
     Nothing -> return date
     Just _ -> do
-      t <- pTime
-      return $ date `addTime` t
+      i <- optional $ lookAhead integer
+      case i of
+        Nothing -> return date
+        Just _ -> do      
+          t <- pTime
+          return $ date `addTime` t 

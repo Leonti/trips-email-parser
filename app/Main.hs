@@ -11,7 +11,7 @@ import Replace.Megaparsec
 
 import Data.Either
 
-import Data.Dates.Internal(pMonth)
+import Data.Dates.Internal(pMonth, number)
 import Data.Dates
 import Data.Dates.Types(DateTime)
 
@@ -62,7 +62,7 @@ testOffset :: IO ()
 testOffset = parseTest (return . rights =<< sepCap withOffset) "hello I'm going to Moscow and Melbourne later"
 
 testOffsetDateTime :: IO ()
-testOffsetDateTime = parseTest (return . rights =<< sepCap withOffsetDateTime) "hello 18/11/2019 11:00pm how are"
+testOffsetDateTime = parseTest (return . rights =<< sepCap withOffsetDateTime) "hello 11/18/2019 11:00pm how are"
 
 
 testTime :: String -> IO ()
