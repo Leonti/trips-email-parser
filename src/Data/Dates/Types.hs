@@ -52,7 +52,10 @@ data Time =
     tHour   :: Int,
     tMinute :: Int,
     tSecond :: Int }
-  deriving (Eq,Ord,Show)
+  deriving (Eq,Ord)
+
+instance Show Time where
+  show (Time h m s) = show h ++ ":" ++ show m ++ ":" ++ show s 
 
 instance Semigroup DateTime where
   dt1 <> dt2 = 

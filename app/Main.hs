@@ -13,7 +13,7 @@ import Data.Either
 
 import Data.Dates.Internal(pMonth, number)
 import Data.Dates
-import Data.Dates.Types(DateTime)
+import Data.Dates.Types(DateTime, Time)
 
 type Parser = Parsec Void String
 
@@ -56,7 +56,13 @@ withOffsetDateTime :: Parser (DateTime, Int)
 withOffsetDateTime = do
   m <- (pAbsDateTime 2019)
   o <- getOffset   
-  return (m, o)  
+  return (m, o)
+ 
+withOffsetTime :: Parser (Time, Int)
+withOffsetTime = do
+  m <- pTime
+  o <- getOffset   
+  return (m, o)    
 
 testOffset :: IO ()
 testOffset = parseTest (return . rights =<< sepCap withOffset) "hello I'm going to Moscow and Melbourne later"
@@ -108,5 +114,7 @@ main :: IO ()
 main = do
   content <- readFile "rawText.txt"
   parseTest (return . rights =<< sepCap withOffsetDateTime) content
+  parseTest (return . rights =<< sepCap withOffsetTime) content
+  parseTest (return . rights =<< sepCap withOffset) content
   putStrLn "done!"
 --  putStrLn content
