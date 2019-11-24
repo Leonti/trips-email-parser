@@ -30,13 +30,10 @@ lookupMonth :: String -> Maybe Int
 lookupMonth n = lookupS n monthsN
 
 date :: Int -> Int -> Int -> DateTime
-date y m d = DateTime y m d 0 0 0
+date y m d = DateTime y m d Nothing
 
 addTime ::  DateTime -> Time -> DateTime
-addTime dt t = dt {
-                 hour = tHour t + hour dt,
-                 minute = tMinute t + minute dt,
-                 second = tSecond t + second dt }
+addTime dt t = dt { time = Just t }
 
 americanDate :: Parsec Void String DateTime
 americanDate = do
