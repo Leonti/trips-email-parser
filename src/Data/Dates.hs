@@ -3,6 +3,7 @@ module Data.Dates where
 import Data.Dates.Internal
 import Data.Dates.Types
 import Data.Char
+import Data.List(isPrefixOf)
 import Text.Megaparsec
 import Text.Megaparsec.Char
 import qualified Text.Megaparsec.Char.Lexer as L
@@ -11,6 +12,22 @@ import Data.Void
 
 --type Parser = Parsec Void String
 
+uppercase :: String -> String
+uppercase = map toUpper
+
+isPrefixOfI ::  String -> String -> Bool
+p `isPrefixOfI` s = (uppercase p) `isPrefixOf` (uppercase s)
+
+lookupS :: String -> [(String,a)] -> Maybe a
+lookupS _ [] = Nothing
+lookupS k ((k',v):other) | k `isPrefixOfI` k' = Just v
+                         | otherwise          = lookupS k other
+
+monthsN :: [(String,Int)]
+monthsN = zip months [1..]
+
+lookupMonth :: String -> Maybe Int
+lookupMonth n = lookupS n monthsN
 
 date :: Int -> Int -> Int -> DateTime
 date y m d = DateTime y m d 0 0 0
@@ -38,6 +55,19 @@ euroNumDate = do
   char '.'
   y <- pYear
   return $ date y m d
+
+strDate :: Parsec Void String DateTime
+strDate = do
+  d <- pDay
+  space
+  ms <- some letterChar
+  case lookupMonth ms of
+    Nothing -> fail $ "unknown month: " ++ ms
+    Just m  -> do
+      space
+      y <- pYear
+      notFollowedBy $ char ':'
+      return $ date y m d
 
 time24 :: Parsec Void String Time
 time24 = do
@@ -79,7 +109,7 @@ pTime = choice $ map try [time12, time24]
 
 pAbsDateTime :: Int -> Parsec Void String DateTime
 pAbsDateTime year = do
-  date <- choice $ map try [americanDate, euroNumDate]
+  date <- choice $ map try [americanDate, euroNumDate, strDate]
   optional $ char ','
   s <- optional $ some spaceChar
   case s of
