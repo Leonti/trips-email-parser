@@ -30,6 +30,15 @@ americanDate = do
   y <- pYear  
   return $ date y m d
 
+euroNumDate :: Parsec Void String DateTime
+euroNumDate = do
+  d <- pDay
+  char '.'
+  m <- pMonth
+  char '.'
+  y <- pYear
+  return $ date y m d
+
 time24 :: Parsec Void String Time
 time24 = do
   h <- number 0 23
@@ -61,7 +70,7 @@ time12 = do
   s <- case x of
             Nothing -> return 0
             Just _  -> number 0 59
-  optional space
+  space
   hd <- ampm
   return $ Time (h + hd) m s
   
@@ -70,11 +79,11 @@ pTime = choice $ map try [time12, time24]
 
 pAbsDateTime :: Int -> Parsec Void String DateTime
 pAbsDateTime year = do
-  date <- choice $ map try $ map ($ year) $ [const americanDate]
+  date <- choice $ map try [americanDate, euroNumDate]
   optional $ char ','
-  s <- optional space
+  s <- optional $ some spaceChar
   case s of
     Nothing -> return date
-    Just _-> do
+    Just _ -> do
       t <- pTime
       return $ date `addTime` t

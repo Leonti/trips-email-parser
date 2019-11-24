@@ -73,6 +73,20 @@ tMonth = parseTest pMonth "11"
 --testDate :: IO ()
 
 
+hello :: Parser String
+hello = string "hello"
+
+fresh :: Parser String
+fresh = string "fresh"
+
+helloFresh :: Parser String
+helloFresh = do
+  hello
+  s <- optional $ some spaceChar
+  case s of
+    Nothing -> return ""
+    Just _ -> fresh
+
 mySequence :: Parser (Char, Char, Char)
 mySequence = do
   a <- char 'a'
@@ -80,6 +94,7 @@ mySequence = do
   c <- char 'c'
   return (a, b, c)
 
+-- https://github.com/mrkkrp/megaparsec-site/blob/master/tutorials/switch-from-parsec-to-megaparsec.md
 -- https://markkarpov.com/megaparsec/megaparsec.html#white-space
 -- https://www.reddit.com/r/haskell/comments/7jbfuo/megaparsec_and_lexers_im_missing_a_concept/
 -- https://github.com/portnov/dates/blob/master/Data/Dates.hs

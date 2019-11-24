@@ -10,14 +10,14 @@ import Data.Void
 
 type Parser = Parsec Void String
     
-sc :: Parser ()
-sc = L.space space1 empty empty
+--sc :: Parser ()
+--sc = L.space space1 empty empty
 
-lexeme :: Parser a -> Parser a
-lexeme = L.lexeme sc
+--lexeme :: Parser a -> Parser a
+--lexeme = L.lexeme sc
 
 integer :: Parser Int
-integer = fmap fromIntegral $ lexeme L.decimal  
+integer = fmap fromIntegral $ L.decimal  
 
 number :: Int -> Int -> Parser Int
 number m1 m2 = do
