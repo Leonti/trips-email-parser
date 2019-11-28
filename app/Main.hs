@@ -15,6 +15,8 @@ import Data.Dates.Internal(pMonth, number)
 import Data.Dates
 import Data.Dates.Types(DateTime, Time)
 
+import Airports(airports)
+
 type Parser = Parsec Void String
 
 sc :: Parser ()
@@ -116,5 +118,9 @@ main = do
   parseTest (return . rights =<< sepCap withOffsetDateTime) content
   parseTest (return . rights =<< sepCap withOffsetTime) content
   parseTest (return . rights =<< sepCap withOffset) content
+  as <- airports
+  case as of
+    Left err -> putStrLn err
+    Right airports' -> putStrLn "Loaded airports"
   putStrLn "done!"
 --  putStrLn content
